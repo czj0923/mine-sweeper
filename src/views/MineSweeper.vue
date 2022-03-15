@@ -1,5 +1,6 @@
 <template>
   <div class="minesweeper">
+    <p>剩余雷数：{{ mineCount - flagNum }}</p>
     <div
       class="game-box"
       :style="{
@@ -12,12 +13,36 @@
             class="box"
             :class="[`box${el.num}`]"
             @click="open(index, index2)"
+            v-if="el.open"
           >
             {{ el.num ? el.num : "" }}
-            {{ el.open ? "o" : "" }}
+          </div>
+          <div
+            class="box unopen"
+            v-else
+            @click="open(index, index2)"
+            @contextmenu.prevent="setFlag(index, index2)"
+          >
+            <img v-if="el.flag" src="../assets/images/flag.png" />
           </div>
         </template>
       </template>
+    </div>
+    <div class="row flex-spaces child-borders">
+      <label class="paper-btn margin" for="modal-1">Open Modal!</label>
+    </div>
+    <input class="modal-state" id="modal-1" type="checkbox" />
+    <div class="modal">
+      <label class="modal-bg" for="modal-1"></label>
+      <div class="modal-body">
+        <label class="btn-close" for="modal-1">X</label>
+        <h4 class="modal-title">Modal Title</h4>
+        <h5 class="modal-subtitle">Modal Subtitle</h5>
+        <p class="modal-text">
+          This is an example of modal which is implemented with pure CSS! :D
+        </p>
+        <label for="modal-1">Nice!</label>
+      </div>
     </div>
   </div>
 </template>
@@ -32,10 +57,11 @@ export default {
       colCount: 8, //列数
       rowCount: 8, //行数
       mineArr: [[]], //存放雷
+      flagNum: 0, //标记旗数
     });
 
     //获取在坐标面板内部的坐标
-    const getPosition = (x, y, max_x, max_y) => {
+    const getPosition = (x, y) => {
       const aroundPos = [
         [x - 1, y - 1],
         [x - 1, y],
@@ -47,7 +73,12 @@ export default {
         [x + 1, y + 1],
       ];
       return aroundPos.filter((arr) => {
-        return arr[0] >= 0 && arr[0] < max_x && arr[1] >= 0 && arr[1] < max_y;
+        return (
+          arr[0] >= 0 &&
+          arr[0] < state.rowCount &&
+          arr[1] >= 0 &&
+          arr[1] < state.colCount
+        );
       });
     };
 
@@ -60,6 +91,7 @@ export default {
             num: 0, //周围雷数
             open: false, //是否已打开
             hasLoop: false, //是否已递归
+            flag: false, //是否已标雷
           };
         }
       }
@@ -73,7 +105,7 @@ export default {
         state.mineArr[row][col].num = 10;
         //设置雷之后，把周围一圈非雷方块数字+1
 
-        const pos = getPosition(row, col, state.rowCount, state.colCount);
+        const pos = getPosition(row, col);
 
         pos.forEach((item) => {
           const [x, y] = item;
@@ -94,40 +126,75 @@ export default {
 
     //点击方块
     const open = (row, col) => {
-      const pos = getPosition(row, col, state.rowCount, state.colCount);
-      console.log(pos);
-      //遍历坐标，如果发现有一个值为10则停止递归
-      state.mineArr = loop(pos, state.mineArr);
-      console.log("state.mineArr", state.mineArr);
+      //点击的方块设置为打开
+      state.mineArr[row][col].open = true;
+      //点击的为雷
+      if (state.mineArr[row][col].num === 10) {
+        alert("输了");
+      } else {
+        const pos = getPosition(row, col);
+        console.log(pos);
+        //遍历坐标，如果发现有一个值为10则停止递归
+        loop(pos);
+        console.log("state.mineArr", state.mineArr);
+      }
 
-      //state.mineArr[row][col];
+      //判断还有几个方块未打开
+      let count = 0;
+      for (let x = 0; x < state.mineArr.length; x++) {
+        for (let y = 0; y < state.mineArr[x].length; y++) {
+          if (!state.mineArr[x][y].open) {
+            count = count + 1;
+          }
+        }
+      }
+      //未打开的方块数<=总雷数
+      if (count <= state.mineCount) {
+        alert("成功");
+      }
+      console.log(count);
+    };
+
+    //标记旗
+    const setFlag = (x, y) => {
+      if (!state.mineArr[x][y].flag) {
+        state.mineArr[x][y].flag = true;
+        state.flagNum++;
+      } else {
+        state.mineArr[x][y].flag = false;
+        state.flagNum--;
+      }
     };
 
     //使用递归打开方块
-    const loop = (pos, arr) => {
+    const loop = (pos) => {
       //周围方块是否存在雷
       const bool = pos.every((item) => {
         const [x, y] = item;
-        return arr[x][y].num !== 10;
+        return state.mineArr[x][y].num !== 10;
       });
 
       if (bool) {
         pos.forEach((item) => {
           const [x, y] = item;
-          arr[x][y].open = true;
-          const _pos = getPosition(x, y, state.rowCount, state.colCount);
-          loop(_pos, arr);
+          if (!state.mineArr[x][y].hasLoop) {
+            state.mineArr[x][y].open = true;
+            state.mineArr[x][y].hasLoop = true;
+            const _pos = getPosition(x, y);
+            loop(_pos);
+          }
         });
       } else {
-        console.log(54565464);
-        return arr;
+        return false;
       }
     };
     initMine();
     onMounted(() => {});
+
     return {
       ...toRefs(state),
       open,
+      setFlag,
     };
   },
 };
@@ -149,6 +216,10 @@ export default {
       cursor: pointer;
       font-size: 24px;
       font-weight: 600;
+      img {
+        border-radius: 0;
+        border: none;
+      }
       &10 {
         background-color: #f00;
       }
@@ -175,6 +246,9 @@ export default {
       }
       &7 {
         color: #000;
+      }
+      &.unopen {
+        background-color: rgb(150, 150, 187);
       }
     }
   }
