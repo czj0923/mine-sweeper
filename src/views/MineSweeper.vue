@@ -1,6 +1,8 @@
 <template>
   <div class="minesweeper">
     <p>剩余雷数：{{ mineCount - flagNum }}</p>
+    <button class="btn-small" @click="restart">重新开始</button>
+    <button class="btn-small" @click="test">ttttt</button>
     <div
       class="game-box"
       :style="{
@@ -13,12 +15,15 @@
             class="box"
             :class="[`box${el.num}`]"
             @click="open(index, index2)"
+            @mousedown="showAround(index, index2)"
+            @mouseup="unShowAround(index, index2)"
             v-if="el.open"
           >
             {{ el.num ? el.num : "" }}
           </div>
           <div
             class="box unopen"
+            :class="{ light: el.light }"
             v-else
             @click="open(index, index2)"
             @contextmenu.prevent="setFlag(index, index2)"
@@ -28,29 +33,27 @@
         </template>
       </template>
     </div>
-    <div class="row flex-spaces child-borders">
-      <label class="paper-btn margin" for="modal-1">Open Modal!</label>
-    </div>
-    <input class="modal-state" id="modal-1" type="checkbox" />
-    <div class="modal">
-      <label class="modal-bg" for="modal-1"></label>
-      <div class="modal-body">
-        <label class="btn-close" for="modal-1">X</label>
-        <h4 class="modal-title">Modal Title</h4>
-        <h5 class="modal-subtitle">Modal Subtitle</h5>
-        <p class="modal-text">
-          This is an example of modal which is implemented with pure CSS! :D
-        </p>
-        <label for="modal-1">Nice!</label>
-      </div>
-    </div>
+    <Modal
+      v-model:visible="successModalVisible"
+      title="恭喜您"
+      content="游戏成功！"
+    ></Modal>
+    <Modal
+      v-model:visible="failModalVisible"
+      title="很遗憾"
+      content="游戏失败~请再接再厉"
+    ></Modal>
   </div>
 </template>
 
 <script>
 import { reactive, toRefs, onMounted } from "vue";
+import Modal from "@/components/Modal";
 export default {
   name: "MineSweeper",
+  components: {
+    Modal,
+  },
   setup() {
     const state = reactive({
       mineCount: 10, //雷数
@@ -58,6 +61,8 @@ export default {
       rowCount: 8, //行数
       mineArr: [[]], //存放雷
       flagNum: 0, //标记旗数
+      successModalVisible: false,
+      failModalVisible: false,
     });
 
     //获取在坐标面板内部的坐标
@@ -92,6 +97,7 @@ export default {
             open: false, //是否已打开
             hasLoop: false, //是否已递归
             flag: false, //是否已标雷
+            light: false, //是否高亮
           };
         }
       }
@@ -130,7 +136,8 @@ export default {
       state.mineArr[row][col].open = true;
       //点击的为雷
       if (state.mineArr[row][col].num === 10) {
-        alert("输了");
+        state.failModalVisible = true;
+        return false;
       } else {
         const pos = getPosition(row, col);
         console.log(pos);
@@ -150,7 +157,7 @@ export default {
       }
       //未打开的方块数<=总雷数
       if (count <= state.mineCount) {
-        alert("成功");
+        state.successModalVisible = true;
       }
       console.log(count);
     };
@@ -188,6 +195,36 @@ export default {
         return false;
       }
     };
+
+    //重新开始
+    const restart = () => {
+      initMine();
+    };
+
+    const test = () => {
+      state.modalVisible = true;
+    };
+
+    //当鼠标在已打开方块上按下时，周围未打开方块显示效果
+    const showAround = (x, y) => {
+      const pos = getPosition(x, y);
+      pos.forEach((item) => {
+        const [x, y] = item;
+        if (!state.mineArr[x][y].open) {
+          state.mineArr[x][y].light = true;
+        }
+      });
+    };
+    //当鼠标在已打开方块上按下时，周围未打开方块显示效果
+    const unShowAround = (x, y) => {
+      const pos = getPosition(x, y);
+      pos.forEach((item) => {
+        const [x, y] = item;
+        if (!state.mineArr[x][y].open) {
+          state.mineArr[x][y].light = false;
+        }
+      });
+    };
     initMine();
     onMounted(() => {});
 
@@ -195,6 +232,10 @@ export default {
       ...toRefs(state),
       open,
       setFlag,
+      test,
+      restart,
+      showAround,
+      unShowAround,
     };
   },
 };
@@ -249,6 +290,9 @@ export default {
       }
       &.unopen {
         background-color: rgb(150, 150, 187);
+      }
+      &.light {
+        background-color: #555;
       }
     }
   }
