@@ -11,7 +11,7 @@
         <button class="btn-success-outline btn-small" @click="close">
           确定
         </button>
-        <button class="btn-success btn-small">重新开始</button>
+        <button class="btn-success btn-small" @click="confirm">重新开始</button>
       </div>
     </div>
   </div>
@@ -32,14 +32,19 @@ export default {
       type: String,
     },
   },
-  emits: ["update:visible"],
+  emits: ["update:visible", "confirm"],
   setup(props, { emit }) {
     //点击关闭
     const close = () => {
       emit("update:visible", false);
     };
+    const confirm = () => {
+      emit("update:visible", false);
+      emit("confirm");
+    };
     return {
       close,
+      confirm,
     };
   },
 };
@@ -52,11 +57,13 @@ export default {
     opacity: 1;
     .modal-body {
       top: 50%;
-      min-width: 40%;
-      .btn-group {
-        display: flex;
-        justify-content: space-between;
-      }
+    }
+  }
+  .modal-body {
+    min-width: 40%;
+    .btn-group {
+      display: flex;
+      justify-content: space-between;
     }
   }
 }
