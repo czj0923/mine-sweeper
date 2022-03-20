@@ -2,6 +2,7 @@
   <div class="minesweeper">
     <p>剩余雷数：{{ mineCount - flagNum }}</p>
     <button class="btn-small" @click="restart">重新开始</button>
+    <Timer ref="timerRef"></Timer>
     <div
       class="game-box"
       :style="{
@@ -46,23 +47,42 @@
 </template>
 
 <script>
-import { reactive, toRefs, onMounted } from "vue";
+import { reactive, toRefs, onMounted, ref, watch } from "vue";
 import Modal from "@/components/Modal";
+import Timer from "@/components/Timer";
 export default {
   name: "MineSweeper",
   components: {
     Modal,
+    Timer,
   },
   setup() {
     const state = reactive({
-      mineCount: 40, //雷数
-      colCount: 20, //列数
-      rowCount: 20, //行数
+      mineCount: 10, //雷数
+      colCount: 8, //列数
+      rowCount: 8, //行数
       mineArr: [[]], //存放雷
       flagNum: 0, //标记旗数
       successModalVisible: false,
       failModalVisible: false,
+      hasStart: false, //标记游戏是否已开始
     });
+
+    watch(
+      () => state.hasStart,
+      (newV, oldV) => {
+        if (newV) {
+          //开始游戏
+          timerRef.value.start();
+        } else {
+          //结束游戏
+          timerRef.value.stop();
+        }
+        console.log("监听", newV, oldV);
+      }
+    );
+
+    const timerRef = ref(null);
 
     //获取在坐标面板内部的坐标
     const getPosition = (x, y) => {
@@ -132,11 +152,20 @@ export default {
 
     //点击方块
     const open = (row, col) => {
+      if (!state.hasStart) {
+        state.hasStart = true;
+      }
+      //如果点击的方块已插旗，则不触发
+      if (state.mineArr[row][col].flag) {
+        return false;
+      }
       //点击的方块设置为打开
       state.mineArr[row][col].open = true;
       //点击的为雷
       if (state.mineArr[row][col].num === 10) {
         state.failModalVisible = true;
+        //暂停计时器
+        timerRef.value.pause();
         return false;
       } else {
         const pos = getPosition(row, col);
@@ -159,6 +188,8 @@ export default {
           //只要有一个方块open和雷数10同时出现  则失败
           if (state.mineArr[x][y].open && state.mineArr[x][y].num === 10) {
             state.failModalVisible = true;
+            //暂停计时器
+            timerRef.value.pause();
             return false;
           }
         }
@@ -166,12 +197,17 @@ export default {
       //未打开的方块数<=总雷数 则成功
       if (count <= state.mineCount) {
         state.successModalVisible = true;
+        //暂停计时器
+        timerRef.value.pause();
         return false;
       }
     };
 
     //标记旗
     const setFlag = (x, y) => {
+      if (!state.hasStart) {
+        state.hasStart = true;
+      }
       if (!state.mineArr[x][y].flag) {
         state.mineArr[x][y].flag = true;
         state.flagNum++;
@@ -207,6 +243,7 @@ export default {
     //重新开始
     const restart = () => {
       initMine();
+      state.hasStart = false;
     };
 
     //当鼠标在已打开方块上按下时，周围未打开方块显示效果
@@ -276,6 +313,7 @@ export default {
       setFlag,
       restart,
       openFlag,
+      timerRef,
     };
   },
 };
@@ -293,7 +331,7 @@ export default {
       width: 25px;
       height: 25px;
       background-color: rgb(197, 194, 194);
-      border: 1px solid rgb(124, 123, 123);
+      border: 1px solid rgb(255, 255, 255);
       cursor: pointer;
       font-size: 24px;
       font-weight: 600;
@@ -329,7 +367,10 @@ export default {
         color: #000;
       }
       &.unopen {
-        background-color: rgb(230, 230, 235);
+        background-color: rgb(111, 111, 112);
+        &:hover {
+          opacity: 0.8;
+        }
       }
       &.light {
         background-color: #555;
