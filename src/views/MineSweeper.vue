@@ -1,36 +1,42 @@
 <template>
-  <div class="minesweeper">
-    <p>剩余雷数：{{ mineCount - flagNum }}</p>
-    <button class="btn-small" @click="restart">重新开始</button>
-    <Timer ref="timerRef"></Timer>
-    <div
-      class="game-box"
-      :style="{
-        width: 25 * rowCount + 'px',
-      }"
-    >
-      <template v-for="(row, index) in mineArr" :key="index">
-        <template v-for="(el, index2) in row" :key="index2">
-          <div
-            class="box"
-            :class="[`box${el.num}`]"
-            @click="openFlag(index, index2)"
-            v-if="el.open"
-          >
-            {{ el.num === 10 ? "●" : el.num ? el.num : "" }}
-          </div>
-          <div
-            class="box unopen"
-            :class="{ light: el.light && !el.flag }"
-            v-else
-            @click="open(index, index2)"
-            @contextmenu.prevent="setFlag(index, index2)"
-          >
-            <img v-if="el.flag" src="../assets/images/flag.png" />
-          </div>
-        </template>
-      </template>
+  <div class="minesweeper row">
+    <div class="left-menu col md-3 card">
+      <Menu v-model:mode="mode"></Menu>
     </div>
+    <div class="right-content col md-9">
+      <p>剩余雷数：{{ mineCount - flagNum }}</p>
+      <button class="btn-small" @click="restart">重新开始</button>
+      <Timer ref="timerRef"></Timer>
+      <div
+        class="game-box"
+        :style="{
+          width: 25 * colCount + 'px',
+        }"
+      >
+        <template v-for="(row, index) in mineArr" :key="index">
+          <template v-for="(el, index2) in row" :key="index2">
+            <div
+              class="box"
+              :class="[`box${el.num}`]"
+              @click="openFlag(index, index2)"
+              v-if="el.open"
+            >
+              {{ el.num === 10 ? "●" : el.num ? el.num : "" }}
+            </div>
+            <div
+              class="box unopen"
+              :class="{ light: el.light && !el.flag }"
+              v-else
+              @click="open(index, index2)"
+              @contextmenu.prevent="setFlag(index, index2)"
+            >
+              <img v-if="el.flag" src="../assets/images/flag.png" />
+            </div>
+          </template>
+        </template>
+      </div>
+    </div>
+
     <Modal
       v-model:visible="successModalVisible"
       title="恭喜您"
@@ -50,11 +56,13 @@
 import { reactive, toRefs, onMounted, ref, watch } from "vue";
 import Modal from "@/components/Modal";
 import Timer from "@/components/Timer";
+import Menu from "@/components/Menu";
 export default {
   name: "MineSweeper",
   components: {
     Modal,
     Timer,
+    Menu,
   },
   setup() {
     const state = reactive({
@@ -66,6 +74,7 @@ export default {
       successModalVisible: false,
       failModalVisible: false,
       hasStart: false, //标记游戏是否已开始
+      mode: 1, //难度 1:初级 2：中级 3：高级
     });
 
     watch(
@@ -79,6 +88,26 @@ export default {
           timerRef.value.stop();
         }
         console.log("监听", newV, oldV);
+      }
+    );
+
+    watch(
+      () => state.mode,
+      (newV) => {
+        if (newV === 1) {
+          state.mineCount = 10;
+          state.colCount = 8;
+          state.rowCount = 8;
+        } else if (newV === 2) {
+          state.mineCount = 40;
+          state.colCount = 16;
+          state.rowCount = 16;
+        } else if (newV === 3) {
+          state.mineCount = 99;
+          state.colCount = 30;
+          state.rowCount = 16;
+        }
+        restart();
       }
     );
 
@@ -108,6 +137,7 @@ export default {
 
     //初始化雷区
     const initMine = () => {
+      state.mineArr = [[]];
       for (let i = 0; i < state.rowCount; i++) {
         state.mineArr[i] = [];
         for (let j = 0; j < state.colCount; j++) {
@@ -320,6 +350,12 @@ export default {
 </script>
 <style scoped lang="scss">
 .minesweeper {
+  padding: 0 20px;
+  align-items: flex-start;
+  .left-menu {
+    background-color: #fff;
+  }
+
   .game-box {
     display: flex;
     flex-wrap: wrap;
@@ -333,8 +369,9 @@ export default {
       background-color: rgb(197, 194, 194);
       border: 1px solid rgb(255, 255, 255);
       cursor: pointer;
-      font-size: 24px;
+      font-size: 20px;
       font-weight: 600;
+      transition: all 0.2s ease;
       img {
         border-radius: 0;
         border: none;
