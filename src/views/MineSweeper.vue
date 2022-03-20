@@ -3,9 +3,8 @@
     <div class="left-menu col md-3 card">
       <Menu v-model:mode="mode"></Menu>
     </div>
-    <div class="right-content col md-9">
+    <div class="right-content md-9">
       <p>剩余雷数：{{ mineCount - flagNum }}</p>
-      <button class="btn-small" @click="restart">重新开始</button>
       <Timer ref="timerRef"></Timer>
       <div
         class="game-box"
@@ -34,6 +33,11 @@
             </div>
           </template>
         </template>
+      </div>
+      <div class="tool-bar">
+        <div class="item">1</div>
+        <div class="item">2</div>
+        <div class="item" @click="restart">重新开始</div>
       </div>
     </div>
 
@@ -354,6 +358,24 @@ export default {
   align-items: flex-start;
   .left-menu {
     background-color: #fff;
+  }
+  .right-content {
+    .tool-bar {
+      background-color: #fff;
+      display: flex;
+      margin-top: 20px;
+      border: 1px solid #eee;
+      box-shadow: 15px 28px 25px -18px rgb(0 0 0 / 20%);
+      .item {
+        flex: 1;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        padding: 10px 0;
+        &:hover {
+          background-color: #eee;
+        }
+      }
+    }
   }
 
   .game-box {

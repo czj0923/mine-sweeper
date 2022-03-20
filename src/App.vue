@@ -1,6 +1,8 @@
 <template>
   <div id="nav">
-    <router-link to="/">minesweeper</router-link>
+    <router-link to="/"
+      ><h4><span class="badge secondary">扫雷小游戏</span></h4>
+    </router-link>
   </div>
   <router-view />
 </template>
@@ -24,15 +26,7 @@ body {
 }
 
 #nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+  padding: 20px;
+  text-align: left;
 }
 </style>
