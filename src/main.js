@@ -1,5 +1,6 @@
 import { createApp } from "vue";
 import "papercss/dist/paper.min.css"; //paper.css
+import "@/assets/css/alert.css";
 import App from "./App.vue";
 import router from "./router";
 

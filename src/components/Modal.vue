@@ -1,20 +1,24 @@
 <template>
-  <div class="modal" :class="{ show: visible }">
-    <label class="modal-bg" @click="close"></label>
-    <div class="modal-body">
-      <label class="btn-close" @click="close">X</label>
-      <h4 class="modal-title">{{ title }}</h4>
-      <p class="modal-text">
-        {{ content }}
-      </p>
-      <div class="btn-group">
-        <button class="btn-success-outline btn-small" @click="close">
-          确定
-        </button>
-        <button class="btn-success btn-small" @click="confirm">重新开始</button>
+  <teleport to="body">
+    <div class="modal" :class="{ show: visible }">
+      <label class="modal-bg" @click="close"></label>
+      <div class="modal-body">
+        <label class="btn-close" @click="close">X</label>
+        <h4 class="modal-title">{{ title }}</h4>
+        <p class="modal-text">
+          {{ content }}
+        </p>
+        <div class="btn-group">
+          <button class="btn-success-outline btn-small" @click="close">
+            确定
+          </button>
+          <button class="btn-success btn-small" @click="confirm">
+            重新开始
+          </button>
+        </div>
       </div>
     </div>
-  </div>
+  </teleport>
 </template>
 
 <script>
