@@ -5,7 +5,19 @@
     </router-link>
   </div>
   <router-view />
+  <Alert></Alert>
 </template>
+
+<script>
+import Alert from "@/components/Alert";
+export default {
+  name: "App",
+  components: {
+    Alert,
+  },
+  setup() {},
+};
+</script>
 
 <style lang="scss">
 * {

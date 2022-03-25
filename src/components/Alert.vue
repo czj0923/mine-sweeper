@@ -1,52 +1,47 @@
 <template>
   <teleport to="body">
-    <transition name="alert">
-      <div class="alert" :class="['alert-' + type]" v-if="visible">
-        <slot>切换成功</slot>
-      </div>
-    </transition>
+    <transition-group name="alert" tag="ul" class="alert-group">
+      <li
+        v-for="item in store.alertQueue"
+        :key="item.id"
+        class="alert"
+        :class="[`alert-${item.type}`]"
+      >
+        {{ item.content }}
+      </li>
+    </transition-group>
   </teleport>
 </template>
 
 <script>
-import { reactive, toRefs, watchEffect } from "vue";
+import { useMainStore } from "../store/main";
 export default {
   name: "Alert",
-  props: {
-    type: {
-      type: String,
-      default: "success",
-    },
-    visible: {
-      type: Boolean,
-    },
-  },
-  emits: ["update:visible"],
-  setup(props, { emit }) {
-    const state = reactive({});
+  setup() {
+    const store = useMainStore();
 
-    //监听弹窗出现，2s后自动关闭
-    watchEffect(() => {
-      if (props.visible) {
-        setTimeout(() => {
-          emit("update:visible", false);
-        }, 2000);
-      }
-    });
     return {
-      ...toRefs(state),
+      store,
     };
   },
 };
 </script>
-<style scoped>
-.alert {
+<style scoped lang="scss">
+.alert-group {
   text-align: center;
   margin: 0 auto;
-  width: 50%;
+  width: 40%;
   position: fixed;
   top: 50px;
   left: 0;
   right: 0;
+  li::before {
+    content: none;
+  }
+  .alert {
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 16px;
+  }
 }
 </style>

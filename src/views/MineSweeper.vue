@@ -4,7 +4,7 @@
       <Menu v-model:mode="mode"></Menu>
     </div>
     <div class="right-content md-9">
-      <p>剩余雷数：{{ mineCount - flagNum }}</p>
+      <p>{{ store.count }}剩余雷数：{{ mineCount - flagNum }}</p>
       <Timer ref="timerRef"></Timer>
       <div
         class="game-box"
@@ -53,11 +53,6 @@
       content="游戏失败~请再接再厉"
       @confirm="restart"
     ></Modal>
-    <button @click="showAlert = !showAlert"></button>
-
-    <Alert :type="alertType" v-model:visible="showAlert">{{
-      alertContent
-    }}</Alert>
   </div>
 </template>
 
@@ -66,16 +61,16 @@ import { reactive, toRefs, onMounted, ref, watch } from "vue";
 import Modal from "@/components/Modal";
 import Timer from "@/components/Timer";
 import Menu from "@/components/Menu";
-import Alert from "@/components/Alert";
+import { useMainStore } from "../store/main";
 export default {
   name: "MineSweeper",
   components: {
     Modal,
     Timer,
     Menu,
-    Alert,
   },
   setup() {
+    const store = useMainStore();
     const state = reactive({
       mineCount: 10, //雷数
       colCount: 8, //列数
@@ -87,19 +82,6 @@ export default {
       hasStart: false, //标记游戏是否已开始
       mode: 1, //难度 1:初级 2：中级 3：高级
     });
-
-    const tipState = reactive({
-      alertType: "success",
-      alertContent: "",
-      showAlert: false,
-    });
-
-    //打开alert
-    const openAlert = (type, content) => {
-      tipState.alertType = type;
-      tipState.alertContent = content;
-      tipState.showAlert = true;
-    };
 
     watch(
       () => state.hasStart,
@@ -206,7 +188,7 @@ export default {
 
     //点击方块
     const open = (row, col) => {
-      openAlert("success", "开始游戏");
+      store.addAlert({ type: "danger", content: "开始游戏" });
       if (!state.hasStart) {
         state.hasStart = true;
       }
@@ -364,12 +346,12 @@ export default {
 
     return {
       ...toRefs(state),
-      ...toRefs(tipState),
       open,
       setFlag,
       restart,
       openFlag,
       timerRef,
+      store,
     };
   },
 };

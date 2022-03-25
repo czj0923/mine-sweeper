@@ -1,19 +1,15 @@
-/*alert 的出现与消失动画*/
-.alert-enter-active{
-  animation: alertIn .5s cubic-bezier(0.215, 0.61, 0.355, 1);
+.alert-enter-active,
+.alert-leave-active {
+  transition: all .4s ease;
 }
-.alert-leave-active{
-  animation: alertIn .5s cubic-bezier(0.215, 0.61, 0.355, 1) reverse;
+.alert-enter-from{
+  opacity: 0;
+  transform: translateY(30px);
 }
-
-@keyframes alertIn {
-  0% {
-    top:0;
-    opacity: 0;
-  }
-
-  100% {
-    top: 50px;
-    opacity: 1;
-  }
+.alert-leave-to{
+  opacity: 0;
+  transform: translateY(-30px);
+}
+.alert-move{
+  transition: all .8s ease;
 }
