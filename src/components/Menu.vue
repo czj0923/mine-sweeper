@@ -9,15 +9,21 @@
         <p @click="changeMode(3)">高级</p>
       </div>
     </div>
+    <div class="collapsible record">
+      <input id="collapsible-record" type="checkbox" name="collapsible" />
+      <label for="collapsible-record">纪录</label>
+      <div class="collapsible-body">
+        <p>{{ store.getRecord.cj }}</p>
+        <p>{{ store.getRecord.zj }}</p>
+        <p>{{ store.getRecord.gj }}</p>
+      </div>
+    </div>
     <div class="collapsible set">
       <input id="collapsible-set" type="checkbox" name="collapsible" />
       <label for="collapsible-set">设置</label>
       <div class="collapsible-body">
-        <p>12346</p>
-        <p>12346</p>
-        <p>12346</p>
-        <p>12346</p>
-        <p>12346</p>
+        <p>颜色</p>
+        <p>----</p>
       </div>
     </div>
   </div>
@@ -25,6 +31,7 @@
 
 <script>
 import { reactive, toRefs, onMounted } from "vue";
+import { useMainStore } from "../store/main";
 export default {
   name: "Menu",
   props: {
@@ -33,6 +40,7 @@ export default {
   emits: ["update:mode"],
   setup(props, { emit }) {
     const state = reactive({});
+    const store = useMainStore();
     //切换游戏难度
     const changeMode = (type) => {
       emit("update:mode", type);
@@ -41,6 +49,7 @@ export default {
     return {
       ...toRefs(state),
       changeMode,
+      store,
     };
   },
 };

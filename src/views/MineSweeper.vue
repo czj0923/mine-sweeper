@@ -4,40 +4,45 @@
       <Menu v-model:mode="mode"></Menu>
     </div>
     <div class="right-content md-9">
-      <p>{{ store.count }}剩余雷数：{{ mineCount - flagNum }}</p>
-      <Timer ref="timerRef"></Timer>
-      <div
-        class="game-box"
-        :style="{
-          width: 25 * colCount + 'px',
-        }"
-      >
-        <template v-for="(row, index) in mineArr" :key="index">
-          <template v-for="(el, index2) in row" :key="index2">
-            <div
-              class="box"
-              :class="[`box${el.num}`]"
-              @click="openFlag(index, index2)"
-              v-if="el.open"
-            >
-              {{ el.num === 10 ? "●" : el.num ? el.num : "" }}
-            </div>
-            <div
-              class="box unopen"
-              :class="{ light: el.light && !el.flag }"
-              v-else
-              @click="open(index, index2)"
-              @contextmenu.prevent="setFlag(index, index2)"
-            >
-              <img v-if="el.flag" src="../assets/images/flag.png" />
-            </div>
+      <div class="content-wrap">
+        <div class="header-box">
+          <Timer ref="timerRef"></Timer>
+          <div>剩余雷数：{{ mineCount - flagNum }}</div>
+        </div>
+
+        <div
+          class="game-box"
+          :style="{
+            width: 25 * colCount + 'px',
+          }"
+        >
+          <template v-for="(row, index) in mineArr" :key="index">
+            <template v-for="(el, index2) in row" :key="index2">
+              <div
+                class="box"
+                :class="[`box${el.num}`]"
+                @click="openFlag(index, index2)"
+                v-if="el.open"
+              >
+                {{ el.num === 10 ? "●" : el.num ? el.num : "" }}
+              </div>
+              <div
+                class="box unopen"
+                :class="{ light: el.light && !el.flag }"
+                v-else
+                @click="open(index, index2)"
+                @contextmenu.prevent="setFlag(index, index2)"
+              >
+                <img v-if="el.flag" src="../assets/images/flag.png" />
+              </div>
+            </template>
           </template>
-        </template>
-      </div>
-      <div class="tool-bar">
-        <div class="item">1</div>
-        <div class="item">2</div>
-        <div class="item" @click="restart">重新开始</div>
+        </div>
+        <div class="tool-bar">
+          <div class="item">1</div>
+          <div class="item">2</div>
+          <div class="item" @click="restart">重新开始</div>
+        </div>
       </div>
     </div>
 
@@ -114,6 +119,10 @@ export default {
           state.rowCount = 16;
         }
         restart();
+        store.addAlert({
+          type: "secondary",
+          content: `难度-${newV == 1 ? "初级" : newV == 2 ? "中级" : "高级"}`,
+        });
       }
     );
 
@@ -188,7 +197,6 @@ export default {
 
     //点击方块
     const open = (row, col) => {
-      store.addAlert({ type: "danger", content: "开始游戏" });
       if (!state.hasStart) {
         state.hasStart = true;
       }
@@ -236,6 +244,14 @@ export default {
         state.successModalVisible = true;
         //暂停计时器
         timerRef.value.pause();
+        let map = {
+          1: "cj",
+          2: "zj",
+          3: "gj",
+        };
+        let record = {};
+        record[map[state.mode]] = timerRef.value.allSecond();
+        store.refreshRecord(record);
         return false;
       }
     };
@@ -281,6 +297,7 @@ export default {
     const restart = () => {
       initMine();
       state.hasStart = false;
+      store.addAlert({ type: "success", content: "游戏已重新开始" });
     };
 
     //当鼠标在已打开方块上按下时，周围未打开方块显示效果
@@ -360,15 +377,26 @@ export default {
 .minesweeper {
   padding: 0 20px;
   align-items: flex-start;
+  justify-content: center;
   .left-menu {
     background-color: #fff;
   }
   .right-content {
+    .header-box {
+      display: flex;
+      justify-content: space-between;
+      background-color: #fff;
+      margin-bottom: 20px;
+      padding: 20px;
+      box-shadow: 1px 1px 0 rgb(0 0 0 / 20%);
+      border-radius: 10px;
+    }
     .tool-bar {
       background-color: #fff;
       display: flex;
       margin-top: 20px;
       border: 1px solid #eee;
+      border-radius: 10px;
       box-shadow: 15px 28px 25px -18px rgb(0 0 0 / 20%);
       .item {
         flex: 1;
@@ -379,6 +407,11 @@ export default {
           background-color: #eee;
         }
       }
+    }
+  }
+  @media screen and (min-width: 992px) {
+    .content-wrap {
+      margin: 0 120px;
     }
   }
 
@@ -431,9 +464,9 @@ export default {
       }
       &.unopen {
         background-color: rgb(111, 111, 112);
-        &:hover {
-          opacity: 0.8;
-        }
+      }
+      &:hover {
+        opacity: 0.8;
       }
       &.light {
         background-color: #555;

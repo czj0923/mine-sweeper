@@ -60,6 +60,10 @@ export default {
       clearInterval(state.timer);
     };
 
+    const allSecond = () => {
+      return state.hour * 3600 + state.minute * 60 + state.second;
+    };
+
     onMounted(() => {});
     return {
       ...toRefs(state),
@@ -69,6 +73,7 @@ export default {
       stop,
       start,
       pause,
+      allSecond,
     };
   },
 };
