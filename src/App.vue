@@ -1,7 +1,7 @@
 <template>
   <div id="nav">
     <router-link to="/"
-      ><h4><span class="badge secondary">扫雷小游戏</span></h4>
+      ><h4><span class="badge secondary">扫雷小游戏（mine-sweeper）</span></h4>
     </router-link>
   </div>
   <router-view />
@@ -46,5 +46,12 @@ body {
 #nav {
   padding: 20px;
   text-align: left;
+}
+.panel {
+  background-color: #fff;
+  margin-bottom: 20px;
+  padding: 20px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
 }
 </style>

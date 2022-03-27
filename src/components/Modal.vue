@@ -10,7 +10,7 @@
         </p>
         <div class="btn-group">
           <button class="btn-success-outline btn-small" @click="close">
-            确定
+            {{ btn1 }}
           </button>
           <button class="btn-success btn-small" @click="confirm">
             重新开始
@@ -34,6 +34,11 @@ export default {
     },
     content: {
       type: String,
+    },
+    //第一个按钮的文案
+    btn1: {
+      type: String,
+      default: "确定",
     },
   },
   emits: ["update:visible", "confirm"],

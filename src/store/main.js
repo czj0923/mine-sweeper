@@ -11,6 +11,10 @@ export const useMainStore = defineStore("main", {
         zj: 0,
         gj: 0,
       },
+      set: {
+        //设置项
+        size: "25",
+      },
     };
   },
   getters: {

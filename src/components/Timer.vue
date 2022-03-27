@@ -1,5 +1,7 @@
 <template>
-  <div class="timer">{{ hour_str }}:{{ minute_str }}:{{ second_str }}</div>
+  <div class="timer">
+    用时 {{ hour_str }} : {{ minute_str }} : {{ second_str }}
+  </div>
 </template>
 
 <script>

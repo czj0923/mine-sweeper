@@ -5,15 +5,19 @@
     </div>
     <div class="right-content md-9">
       <div class="content-wrap">
-        <div class="header-box">
+        <div class="header-box panel">
           <Timer ref="timerRef"></Timer>
-          <div>剩余雷数：{{ mineCount - flagNum }}</div>
+          <div>
+            剩余雷数：X{{ mineCount - flagNum
+            }}<img class="mineImg" src="../assets/images/mine.jpeg" />
+          </div>
         </div>
 
         <div
-          class="game-box"
+          class="game-box panel"
           :style="{
-            width: 25 * colCount + 'px',
+            gridTemplateColumns: `repeat(${colCount}, ${store.set.size}px)`,
+            gridTemplateRows: `repeat(${rowCount}, ${store.set.size}px)`,
           }"
         >
           <template v-for="(row, index) in mineArr" :key="index">
@@ -24,7 +28,8 @@
                 @click="openFlag(index, index2)"
                 v-if="el.open"
               >
-                {{ el.num === 10 ? "●" : el.num ? el.num : "" }}
+                <img v-if="el.num === 10" src="../assets/images/mine.jpeg" />
+                <span v-else> {{ el.num ? el.num : "" }}</span>
               </div>
               <div
                 class="box unopen"
@@ -38,11 +43,9 @@
             </template>
           </template>
         </div>
-        <div class="tool-bar">
-          <div class="item">1</div>
-          <div class="item">2</div>
-          <div class="item" @click="restart">重新开始</div>
-        </div>
+        <button style="width: 100%" class="btn-warning" @click="restart">
+          重新开始
+        </button>
       </div>
     </div>
 
@@ -385,27 +388,11 @@ export default {
     .header-box {
       display: flex;
       justify-content: space-between;
-      background-color: #fff;
-      margin-bottom: 20px;
-      padding: 20px;
-      box-shadow: 1px 1px 0 rgb(0 0 0 / 20%);
-      border-radius: 10px;
-    }
-    .tool-bar {
-      background-color: #fff;
-      display: flex;
-      margin-top: 20px;
-      border: 1px solid #eee;
-      border-radius: 10px;
-      box-shadow: 15px 28px 25px -18px rgb(0 0 0 / 20%);
-      .item {
-        flex: 1;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        padding: 10px 0;
-        &:hover {
-          background-color: #eee;
-        }
+      .mineImg {
+        border: none;
+        width: 20px;
+        height: 20px;
+        display: inline-block;
       }
     }
   }
@@ -416,15 +403,12 @@ export default {
   }
 
   .game-box {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 0 auto;
+    display: grid;
+    justify-content: center;
     .box {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 25px;
-      height: 25px;
       background-color: rgb(197, 194, 194);
       border: 1px solid rgb(255, 255, 255);
       cursor: pointer;
