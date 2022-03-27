@@ -51,6 +51,20 @@
               <p>{{ store.set.size }}px</p>
             </div>
           </li>
+          <li>
+            全屏
+            <fieldset class="form-group">
+              <label class="paper-switch-2">
+                <input
+                  id="paperSwitch"
+                  name="paperSwitch"
+                  type="checkbox"
+                  v-model="store.set.fullScreen"
+                />
+                <span class="paper-switch-slider round"></span>
+              </label>
+            </fieldset>
+          </li>
         </ul>
       </div>
     </div>
@@ -113,6 +127,7 @@ export default {
   .set {
     .form-group {
       display: flex;
+      justify-content: center;
       input {
         display: block;
         margin-right: 20px;

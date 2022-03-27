@@ -14,6 +14,7 @@ export const useMainStore = defineStore("main", {
       set: {
         //设置项
         size: "25",
+        fullScreen: false,
       },
     };
   },

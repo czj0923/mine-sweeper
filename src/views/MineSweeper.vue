@@ -1,5 +1,8 @@
 <template>
   <div class="minesweeper row">
+    <div class="exit-tips" v-if="store.set.fullScreen" @click="exitFullScreen">
+      退出全屏[Esc]
+    </div>
     <div class="left-menu col md-3 card">
       <Menu v-model:mode="mode"></Menu>
     </div>
@@ -12,14 +15,7 @@
             }}<img class="mineImg" src="../assets/images/mine.jpeg" />
           </div>
         </div>
-
-        <div
-          class="game-box panel"
-          :style="{
-            gridTemplateColumns: `repeat(${colCount}, ${store.set.size}px)`,
-            gridTemplateRows: `repeat(${rowCount}, ${store.set.size}px)`,
-          }"
-        >
+        <div class="game-box panel" :style="gameBoxStyle">
           <template v-for="(row, index) in mineArr" :key="index">
             <template v-for="(el, index2) in row" :key="index2">
               <div
@@ -65,7 +61,7 @@
 </template>
 
 <script>
-import { reactive, toRefs, onMounted, ref, watch } from "vue";
+import { reactive, toRefs, onMounted, ref, watch, computed } from "vue";
 import Modal from "@/components/Modal";
 import Timer from "@/components/Timer";
 import Menu from "@/components/Menu";
@@ -89,6 +85,13 @@ export default {
       failModalVisible: false,
       hasStart: false, //标记游戏是否已开始
       mode: 1, //难度 1:初级 2：中级 3：高级
+    });
+
+    document.addEventListener("keydown", function ({ key }) {
+      console.log(key);
+      if (key === "Escape") {
+        exitFullScreen();
+      }
     });
 
     watch(
@@ -361,6 +364,33 @@ export default {
 
       isFinish();
     };
+
+    //游戏区的动态样式
+    const gameBoxStyle = computed(() => {
+      let gridStyle = {
+        gridTemplateColumns: `repeat(${state.colCount}, ${store.set.size}px)`,
+        gridTemplateRows: `repeat(${state.rowCount}, ${store.set.size}px)`,
+      };
+      let fullScreenStyle = {
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        paddingTop: "70px",
+      };
+      if (store.set.fullScreen) {
+        return Object.assign({}, gridStyle, fullScreenStyle);
+      } else {
+        return gridStyle;
+      }
+    });
+
+    //退出全屏
+    const exitFullScreen = () => {
+      store.set.fullScreen = false;
+    };
+
     initMine();
     onMounted(() => {});
 
@@ -372,6 +402,8 @@ export default {
       openFlag,
       timerRef,
       store,
+      gameBoxStyle,
+      exitFullScreen,
     };
   },
 };
@@ -381,6 +413,22 @@ export default {
   padding: 0 20px;
   align-items: flex-start;
   justify-content: center;
+  .exit-tips {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgb(59, 56, 56);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #fff;
+    z-index: 2;
+    padding: 8px 10px;
+    font-size: 12px;
+    &:hover {
+      opacity: 0.8;
+    }
+  }
   .left-menu {
     background-color: #fff;
   }
