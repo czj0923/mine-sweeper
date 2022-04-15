@@ -67,7 +67,7 @@ mine-sweeper是使用[vue3](https://v3.cn.vuejs.org/)开发的一个扫雷小游
 ## 开发
 ### 克隆代码
 ```
-git clone https://github.com/lin-xin/vue-manage-system.git
+git clone https://github.com/czj0923/mine-sweeper.git
 ```
 ### 进入项目目录
 ```
