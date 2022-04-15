@@ -62,7 +62,7 @@ mine-sweeper是使用[vue3](https://v3.cn.vuejs.org/)开发的一个扫雷小游
 - 只要有一个方块open和雷数10同时出现，则为失败
 
 ## 在线demo
-扫雷 [点击试玩](https://1051029357.github.io/mine-sweeper/dist).
+扫雷 [点击试玩](https://czj0923.github.io/mine-sweeper/dist).
 
 ## 开发
 ### 克隆代码
