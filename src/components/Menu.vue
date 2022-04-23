@@ -77,7 +77,7 @@ import { useMainStore } from "../store/main";
 export default defineComponent({
   name: "MenuComp",
   props: {
-    mode: String,
+    mode: Number,
   },
   emits: ["update:mode"],
   setup(props, { emit }) {

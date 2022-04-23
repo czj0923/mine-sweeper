@@ -17,5 +17,5 @@ export class InitData {
   successModalVisible = false;
   failModalVisible = false;
   hasStart = false; //标记游戏是否已开始
-  mode = "1"; //难度 1:初级 2：中级 3：高级
+  mode = 1; //难度 1:初级 2：中级 3：高级
 }

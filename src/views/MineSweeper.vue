@@ -110,15 +110,15 @@ export default defineComponent({
     watch(
       () => state.mode,
       (newV) => {
-        if (newV === "1") {
+        if (newV === 1) {
           state.mineCount = 10;
           state.colCount = 8;
           state.rowCount = 8;
-        } else if (newV === "2") {
+        } else if (newV === 2) {
           state.mineCount = 40;
           state.colCount = 16;
           state.rowCount = 16;
-        } else if (newV === "3") {
+        } else if (newV === 3) {
           state.mineCount = 99;
           state.colCount = 30;
           state.rowCount = 16;
@@ -126,9 +126,7 @@ export default defineComponent({
         restart();
         store.addAlert({
           type: "secondary",
-          content: `难度-${
-            newV == "1" ? "初级" : newV == "2" ? "中级" : "高级"
-          }`,
+          content: `难度-${newV == 1 ? "初级" : newV == 2 ? "中级" : "高级"}`,
         });
       }
     );
