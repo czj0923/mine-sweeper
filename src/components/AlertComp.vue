@@ -13,20 +13,11 @@
   </teleport>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { useMainStore } from "../store/main";
-import { defineComponent } from "vue";
-export default defineComponent({
-  name: "AlertComp",
-  setup() {
-    const store = useMainStore();
-
-    return {
-      store,
-    };
-  },
-});
+const store = useMainStore();
 </script>
+
 <style scoped lang="scss">
 .alert-group {
   text-align: center;

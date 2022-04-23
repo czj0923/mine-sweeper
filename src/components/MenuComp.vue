@@ -7,7 +7,7 @@
       >
       <div class="collapsible-body">
         <ul>
-          <li v-for="(item, index) in modeArr" :key="index">
+          <li v-for="(item, index) in state.modeArr" :key="index">
             <button
               :class="[`btn-${item.btn}-outline`, 'btn-small']"
               @click="changeMode(index + 1)"
@@ -71,46 +71,37 @@
   </div>
 </template>
 
-<script lang="ts">
-import { reactive, toRefs, defineComponent } from "vue";
+<script lang="ts" setup>
+import { reactive, defineProps, defineEmits } from "vue";
 import { useMainStore } from "../store/main";
-export default defineComponent({
-  name: "MenuComp",
-  props: {
-    mode: Number,
-  },
-  emits: ["update:mode"],
-  setup(props, { emit }) {
-    const state = reactive({
-      size: 25,
-      modeArr: [
-        {
-          name: "初级",
-          btn: "success",
-        },
-        {
-          name: "中级",
-          btn: "warning",
-        },
-        {
-          name: "高级",
-          btn: "danger",
-        },
-      ],
-    });
-    const store = useMainStore();
-    //切换游戏难度
-    const changeMode = (type: number) => {
-      emit("update:mode", type);
-    };
 
-    return {
-      ...toRefs(state),
-      changeMode,
-      store,
-    };
-  },
+const props = defineProps({
+  mode: Number,
 });
+
+const emit = defineEmits(["update:mode"]);
+const state = reactive({
+  size: 25,
+  modeArr: [
+    {
+      name: "初级",
+      btn: "success",
+    },
+    {
+      name: "中级",
+      btn: "warning",
+    },
+    {
+      name: "高级",
+      btn: "danger",
+    },
+  ],
+});
+const store = useMainStore();
+//切换游戏难度
+const changeMode = (type: number) => {
+  emit("update:mode", type);
+};
 </script>
 <style scoped lang="scss">
 .menupanel {

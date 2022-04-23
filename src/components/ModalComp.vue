@@ -21,43 +21,36 @@
   </teleport>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-export default defineComponent({
-  name: "ModalComp",
-  props: {
-    visible: {
-      type: Boolean,
-      default: false,
-    },
-    title: {
-      type: String,
-    },
-    content: {
-      type: String,
-    },
-    //第一个按钮的文案
-    btn1: {
-      type: String,
-      default: "确定",
-    },
+<script lang="ts" setup>
+import { defineProps, defineEmits } from "vue";
+const props = defineProps({
+  visible: {
+    type: Boolean,
+    default: false,
   },
-  emits: ["update:visible", "confirm"],
-  setup(props, { emit }) {
-    //点击关闭
-    const close = () => {
-      emit("update:visible", false);
-    };
-    const confirm = () => {
-      emit("update:visible", false);
-      emit("confirm");
-    };
-    return {
-      close,
-      confirm,
-    };
+  title: {
+    type: String,
+  },
+  content: {
+    type: String,
+  },
+  //第一个按钮的文案
+  btn1: {
+    type: String,
+    default: "确定",
   },
 });
+
+const emit = defineEmits(["update:visible", "confirm"]);
+
+//点击关闭
+const close = () => {
+  emit("update:visible", false);
+};
+const confirm = () => {
+  emit("update:visible", false);
+  emit("confirm");
+};
 </script>
 
 <style scoped lang="scss">

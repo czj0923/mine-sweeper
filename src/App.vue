@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import Alert from "@/components/Alert.vue";
+import Alert from "@/components/AlertComp.vue";
 import { useMainStore } from "./store/main";
 export default defineComponent({
   name: "App",

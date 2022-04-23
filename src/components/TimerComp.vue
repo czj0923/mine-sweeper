@@ -7,7 +7,6 @@
 <script lang="ts">
 import { reactive, toRefs, computed, defineComponent } from "vue";
 export default defineComponent({
-  name: "TimerComp",
   setup() {
     const state = reactive({
       hour: 0,
@@ -71,9 +70,9 @@ export default defineComponent({
       second_str,
       minute_str,
       hour_str,
-      stop,
       start,
       pause,
+      stop,
       allSecond,
     };
   },
