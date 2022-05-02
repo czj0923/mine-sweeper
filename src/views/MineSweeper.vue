@@ -61,12 +61,14 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, toRefs, ref, watch, computed } from "vue";
+import { reactive, ref, watch, computed } from "vue";
 import Modal from "@/components/ModalComp.vue";
 import Timer from "@/components/TimerComp.vue";
 import Menu from "@/components/MenuComp.vue";
 import { useMainStore } from "../store/main";
 import { InitData } from "../types/main";
+import { getRandom } from "../utils";
+
 const store = useMainStore();
 const state = reactive(new InitData());
 
@@ -156,10 +158,10 @@ const initMine = () => {
   }
 
   for (let i = 0; i < state.mineCount; i++) {
-    let [row, col] = Random(state.rowCount, state.colCount);
+    let [row, col] = getRandom(state.rowCount, state.colCount);
     //如果该位置有雷，则重新获取随机坐标
     while (state.mineArr[row][col].num === 10) {
-      [row, col] = Random(state.rowCount, state.colCount);
+      [row, col] = getRandom(state.rowCount, state.colCount);
     }
     state.mineArr[row][col].num = 10;
     //设置雷之后，把周围一圈非雷方块数字+1
@@ -176,13 +178,6 @@ const initMine = () => {
   console.log(state.mineArr);
   state.flagNum = 0;
 };
-
-//生成随机整数 [0,max)
-function Random(max_r: number, max_c: number): [x: number, y: number] {
-  let x = Math.floor(Math.random() * max_r);
-  let y = Math.floor(Math.random() * max_c);
-  return [x, y];
-}
 
 //点击方块
 const open = (row: number, col: number) => {
@@ -314,7 +309,6 @@ const restart = () => {
 
 //已标雷的情况下，点击未打开方块时，如果数字等于周围一圈标雷数量，则自动打开周围一圈未标雷的方块
 const openFlag = (_x: number, _y: number) => {
-  console.log("点击的坐标", _x, _y);
   const pos = getPosition(_x, _y);
   let flagCount = 0;
   //统计周围一圈标了几个旗
