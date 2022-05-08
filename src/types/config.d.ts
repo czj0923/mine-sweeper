@@ -18,3 +18,4 @@ export interface InitData {
   hasStart: boolean; //标记游戏是否已开始
   mode: 1 | 2 | 3; //难度 1:初级 2：中级 3：高级
 }
+declare type posType = [number, number];

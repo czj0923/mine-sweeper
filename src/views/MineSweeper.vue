@@ -66,7 +66,8 @@ import Modal from "@/components/ModalComp.vue";
 import Timer from "@/components/TimerComp.vue";
 import Menu from "@/components/MenuComp.vue";
 import { useMainStore } from "../store/main";
-import { InitData } from "../types/config.d";
+import { InitData, posType } from "../types/config";
+import { primary, intermediate, senior } from "../enums/gradeEnum";
 import { getRandom } from "../utils";
 
 const store = useMainStore();
@@ -103,22 +104,31 @@ watch(
   }
 );
 
+//设置雷数和界面大小
+function setConfig(type: number) {
+  let typeMap: {
+    [keyName: number]: {
+      MINE_COUNT: number;
+      COL_COUNT: number;
+      ROW_COUNT: number;
+    };
+  } = {
+    1: primary,
+    2: intermediate,
+    3: senior,
+  };
+
+  const { MINE_COUNT, COL_COUNT, ROW_COUNT } = typeMap[type];
+
+  state.mineCount = MINE_COUNT;
+  state.colCount = COL_COUNT;
+  state.rowCount = ROW_COUNT;
+}
+
 watch(
   () => state.mode,
   (newV) => {
-    if (newV === 1) {
-      state.mineCount = 10;
-      state.colCount = 8;
-      state.rowCount = 8;
-    } else if (newV === 2) {
-      state.mineCount = 40;
-      state.colCount = 16;
-      state.rowCount = 16;
-    } else if (newV === 3) {
-      state.mineCount = 99;
-      state.colCount = 30;
-      state.rowCount = 16;
-    }
+    setConfig(newV);
     restart();
     store.addAlert({
       type: "secondary",
@@ -130,8 +140,8 @@ watch(
 const timerRef = ref<InstanceType<typeof Timer>>();
 
 //获取在坐标面板内部的坐标
-const getPosition = (x: number, y: number) => {
-  const aroundPos = [
+const getPosition = (x: number, y: number): posType[] => {
+  const aroundPos: posType[] = [
     [x - 1, y - 1],
     [x - 1, y],
     [x - 1, y + 1],
