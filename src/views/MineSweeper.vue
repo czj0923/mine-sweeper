@@ -66,11 +66,21 @@ import Modal from "@/components/ModalComp.vue";
 import Timer from "@/components/TimerComp.vue";
 import Menu from "@/components/MenuComp.vue";
 import { useMainStore } from "../store/main";
-import { InitData } from "../types/main";
+import { InitData } from "../types/config.d";
 import { getRandom } from "../utils";
 
 const store = useMainStore();
-const state = reactive(new InitData());
+const state: InitData = reactive({
+  mineCount: 10, //雷数
+  colCount: 8, //列数
+  rowCount: 8, //行数
+  mineArr: [[]], //存放雷
+  flagNum: 0, //标记旗数
+  successModalVisible: false,
+  failModalVisible: false,
+  hasStart: false, //标记游戏是否已开始
+  mode: 1, //难度 1:初级 2：中级 3：高级
+});
 
 document.addEventListener("keydown", function ({ key }) {
   console.log(key);

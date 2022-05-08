@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "module": "esnext",
-    "strict": false,
+    "strict": true,
     "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",
@@ -31,9 +31,11 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
+    "src/**/*.d.ts",
     "src/**/*.vue",
     "tests/**/*.ts",
-    "tests/**/*.tsx"
+    "tests/**/*.tsx",
+    "vite.config.ts"
   ],
   "exclude": [
     "node_modules"

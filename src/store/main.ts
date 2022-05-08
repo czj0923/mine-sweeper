@@ -1,5 +1,17 @@
 import { defineStore } from "pinia";
 
+export type MainState = {
+  id: number;
+  alertQueue: [];
+  record: {
+    [keyName: string]: number;
+  };
+  set: {
+    size: string;
+    fullScreen: boolean;
+  };
+};
+
 export const useMainStore = defineStore("main", {
   state: () => {
     return {
@@ -19,7 +31,7 @@ export const useMainStore = defineStore("main", {
     };
   },
   getters: {
-    getRecord(state: { record: { cj: number; zj: number; gj: number } }) {
+    getRecord(state: any): { [keyName: string]: string } {
       return {
         cj: `初级纪录 ${state.record.cj}秒`,
         zj: `中级纪录 ${state.record.zj}秒`,
