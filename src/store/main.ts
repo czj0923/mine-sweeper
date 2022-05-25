@@ -1,8 +1,9 @@
 import { defineStore } from "pinia";
+import { IAlert, IRecord } from "@/types/main";
 
-export type MainState = {
+interface IMainState {
   id: number;
-  alertQueue: [];
+  alertQueue: IAlert[];
   record: {
     [keyName: string]: number;
   };
@@ -10,10 +11,10 @@ export type MainState = {
     size: string;
     fullScreen: boolean;
   };
-};
+}
 
 export const useMainStore = defineStore("main", {
-  state: () => {
+  state: (): IMainState => {
     return {
       id: 0,
       alertQueue: [],
@@ -31,7 +32,7 @@ export const useMainStore = defineStore("main", {
     };
   },
   getters: {
-    getRecord(state: any): { [keyName: string]: string } {
+    getRecord(state: IMainState): { [keyName: string]: string } {
       return {
         cj: `初级纪录 ${state.record.cj}秒`,
         zj: `中级纪录 ${state.record.zj}秒`,
@@ -41,7 +42,7 @@ export const useMainStore = defineStore("main", {
   },
   actions: {
     //添加alert
-    addAlert(data: any) {
+    addAlert(data: IAlert) {
       this.$patch((state: { id: number }) => state.id++);
       if (this.alertQueue.length > 1) {
         this.alertQueue.shift();
@@ -53,7 +54,7 @@ export const useMainStore = defineStore("main", {
     },
 
     //更新纪录
-    refreshRecord(data: { [x: string]: any }) {
+    refreshRecord(data: IRecord) {
       //和现有纪录作比较
       Object.keys(data).forEach((key) => {
         if (data[key] < this.record[key] || !this.record[key]) {

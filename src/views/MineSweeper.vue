@@ -66,7 +66,7 @@ import Modal from "@/components/ModalComp.vue";
 import Timer from "@/components/TimerComp.vue";
 import Menu from "@/components/MenuComp.vue";
 import { useMainStore } from "../store/main";
-import { InitData, posType } from "../types/config";
+import { InitData, posType } from "../types/main";
 import { primary, intermediate, senior } from "../enums/gradeEnum";
 import { getRandom } from "../utils";
 

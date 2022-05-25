@@ -18,4 +18,13 @@ export interface InitData {
   hasStart: boolean; //标记游戏是否已开始
   mode: 1 | 2 | 3; //难度 1:初级 2：中级 3：高级
 }
+
+export interface IAlert {
+  type: string;
+  content: string;
+  id?: number;
+}
+export interface IRecord {
+  [x: string]: number;
+}
 declare type posType = [number, number];

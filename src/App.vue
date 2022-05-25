@@ -12,6 +12,7 @@
 import { defineComponent } from "vue";
 import Alert from "@/components/AlertComp.vue";
 import { useMainStore } from "./store/main";
+import { IRecord } from "./types/main";
 export default defineComponent({
   name: "App",
   components: {
@@ -23,8 +24,8 @@ export default defineComponent({
     let record = localStorage.getItem("record");
     if (record) {
       record = JSON.parse(record);
+      store.refreshRecord(record as unknown as IRecord);
     }
-    store.refreshRecord(record);
   },
 });
 </script>
