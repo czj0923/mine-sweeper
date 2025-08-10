@@ -72,7 +72,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, defineProps, defineEmits } from "vue";
+import { reactive, defineEmits } from "vue";
 import { useMainStore } from "../store/main";
 
 const props = defineProps({

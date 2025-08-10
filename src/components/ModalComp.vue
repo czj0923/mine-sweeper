@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, defineEmits } from "vue";
+import { defineEmits } from "vue";
 const props = defineProps({
   visible: {
     type: Boolean,
