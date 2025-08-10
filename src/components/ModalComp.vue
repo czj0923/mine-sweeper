@@ -22,8 +22,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineEmits } from "vue";
-const props = defineProps({
+defineProps({
   visible: {
     type: Boolean,
     default: false,

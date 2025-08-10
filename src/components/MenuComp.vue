@@ -72,10 +72,9 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, defineEmits } from "vue";
+import { reactive } from "vue";
 import { useMainStore } from "../store/main";
-
-const props = defineProps({
+defineProps({
   mode: Number,
 });
 
